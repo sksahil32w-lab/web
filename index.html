@@ -1,1180 +1,590 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAHIL GAMES | Futuristic Gaming Platform</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
     
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        darkBase: '#030305',
-                        darkPanel: '#0a0a10',
-                        neonBlue: '#00f3ff',
-                        neonPurple: '#bc13fe',
-                        neonPink: '#ff007f',
-                    },
-                    fontFamily: {
-                        orbitron: ['Orbitron', 'sans-serif'],
-                        rajdhani: ['Rajdhani', 'sans-serif'],
-                    },
-                    backgroundImage: {
-                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-                    }
-                }
-            }
-        }
-    </script>
-
     <style>
         :root {
+            --bg-dark: #050505;
             --neon-blue: #00f3ff;
             --neon-purple: #bc13fe;
+            --glass-bg: rgba(20, 20, 25, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.05);
         }
 
         body {
-            background-color: #030305;
-            color: #ffffff;
             font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-dark);
+            color: white;
             overflow-x: hidden;
-            cursor: none; 
+            margin: 0;
+            padding: 0;
+            user-select: none;
         }
 
+        h1, h2, h3, .logo-text { font-family: 'Orbitron', sans-serif; }
+
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #030305; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
         ::-webkit-scrollbar-thumb {
             background: linear-gradient(to bottom, var(--neon-blue), var(--neon-purple));
             border-radius: 10px;
         }
-        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, var(--neon-purple), var(--neon-blue)); }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
         }
 
-        .text-gradient {
-            background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .neon-text { text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue); }
+
+        .particles {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 0; overflow: hidden;
         }
 
-        .hover-glow:hover {
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
-            border-color: rgba(0, 243, 255, 0.5);
-            transform: translateY(-5px);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        .particle {
+            position: absolute; background: white; border-radius: 50%;
+            animation: float linear infinite;
         }
 
-        #cursor {
-            position: fixed; top: 0; left: 0; width: 20px; height: 20px;
-            border: 2px solid var(--neon-blue); border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999; transition: width 0.2s, height 0.2s, background-color 0.2s;
-        }
-        #cursor-trail {
-            position: fixed; top: 0; left: 0; width: 8px; height: 8px;
-            background-color: var(--neon-purple); border-radius: 50%;
-            pointer-events: none;
-            z-index: 9998;
-            box-shadow: 0 0 10px var(--neon-purple);
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
         }
 
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 15px var(--neon-blue)); }
-            50% { opacity: 1; filter: drop-shadow(0 0 30px var(--neon-purple)); }
-        }
-        .animate-neon-pulse { animation: pulse-glow 3s infinite alternate; }
-
-        @keyframes scanline {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100vh); }
-        }
-        .scanline-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: linear-gradient(to bottom, transparent, rgba(0, 243, 255, 0.05), transparent);
-            animation: scanline 6s linear infinite; pointer-events: none; z-index: 50;
+        .game-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer; overflow: hidden; position: relative;
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up {
-            animation: fadeInUp 0.3s ease-out forwards;
+        .game-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 243, 255, 0.2);
         }
 
-        .fade-out { opacity: 0; visibility: hidden; transition: opacity 0.8s ease-out, visibility 0.8s ease-out; }
-        .fade-in { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; transition: opacity 1s ease-out, transform 1s ease-out; }
-        
-        .view-section { transition: opacity 0.3s ease; }
-        .view-section.hidden { display: none; opacity: 0; }
+        .game-image { transition: transform 0.5s ease; }
+        .game-card:hover .game-image { transform: scale(1.1); }
 
-        #main-app {
-            display: flex; flex-direction: row; width: 100%; height: 100vh; position: relative;
-        }
-        aside.sidebar {
-            width: 280px; flex-shrink: 0; display: flex; flex-direction: column;
-            background: rgba(3, 3, 5, 0.95); backdrop-filter: blur(15px);
-            border-right: 1px solid rgba(255, 255, 255, 0.05); z-index: 50;
-            position: absolute; left: 0; top: 0; height: 100%;
-            transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        @media (min-width: 768px) {
-            aside.sidebar { 
-                position: relative; transform: translateX(0); 
-                background: rgba(3, 3, 5, 0.8); backdrop-filter: blur(10px); z-index: 30; width: 250px;
-            }
-        }
-        aside.sidebar.open { transform: translateX(0); }
-        
-        main.content-area {
-            flex-grow: 1; min-width: 0; display: flex; flex-direction: column;
-            overflow: hidden; position: relative; width: 100%;
-        }
-
-        .nav-link.active {
-            background: rgba(255, 255, 255, 0.1); color: white;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
-        }
-        .nav-link.active i { color: var(--neon-blue); }
-
-        /* Auth Form specific inputs */
-        .auth-input {
-            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1);
-            color: white; padding: 12px 16px; border-radius: 8px; font-family: 'Rajdhani', sans-serif;
+        .btn-neon {
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            background-size: 200% 200%;
+            animation: gradientMove 3s ease infinite;
             transition: all 0.3s ease;
+            position: relative; z-index: 1;
         }
-        .auth-input:focus {
-            outline: none; border-color: var(--neon-blue); box-shadow: 0 0 10px rgba(0,243,255,0.2);
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
+
+        #loadingScreen {
+            position: fixed; inset: 0; background: #000; z-index: 999999;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        #authScreen, #mainApp { display: none; }
+
+        #gamePage {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9000; flex-direction: column;
+        }
+
+        @keyframes levelUpGlow {
+            0% { box-shadow: 0 0 10px #bc13fe; transform: scale(1); }
+            50% { box-shadow: 0 0 50px #bc13fe, 0 0 20px #00f3ff; transform: scale(1.1); }
+            100% { box-shadow: 0 0 10px #bc13fe; transform: scale(1); }
+        }
+        .level-up-anim { animation: levelUpGlow 1s ease-out; }
     </style>
 </head>
-<body class="relative min-h-screen text-gray-200 selection:bg-neonPurple selection:text-white">
+<body class="text-gray-200">
 
-    <!-- Canvas for Particles -->
-    <canvas id="particleCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 opacity-40"></canvas>
-    <div class="scanline-overlay"></div>
+    <div class="particles" id="particles"></div>
 
-    <!-- UI Overlays for Progression -->
-    <div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none"></div>
-
-    <div id="level-up-overlay" class="fixed inset-0 z-[9999] hidden items-center justify-center pointer-events-none">
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-md"></div>
-        <div class="relative z-10 flex flex-col items-center transform scale-50 opacity-0 transition-all duration-500" id="level-up-content">
-            <i class="fas fa-angle-double-up text-7xl text-neonBlue animate-bounce mb-4" style="filter: drop-shadow(0 0 25px #00f3ff)"></i>
-            <h1 class="text-6xl md:text-8xl font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-r from-neonBlue to-neonPurple animate-neon-pulse text-center">LEVEL UP!</h1>
-            <p class="text-2xl md:text-3xl text-white font-bold mt-4 font-orbitron tracking-widest">LEVEL <span id="level-up-number" class="text-neonBlue drop-shadow-[0_0_10px_#00f3ff]">X</span> ACHIEVED</p>
+    <div id="loadingScreen">
+        <div class="flex flex-col items-center gap-4">
+            <div class="w-16 h-16 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin"></div>
+            <p class="logo-text text-cyan-400 tracking-widest text-sm animate-pulse">CONNECTING TO SAHIL CLOUD...</p>
         </div>
     </div>
 
-    <!-- Custom Cursor -->
-    <div id="cursor"></div>
-    <div id="cursor-trail"></div>
+    <div id="authScreen" class="fixed inset-0 flex items-center justify-center bg-black/90 backdrop-blur-md">
+        <div class="glass-panel p-8 w-[90%] max-w-md flex flex-col items-center shadow-[0_0_50px_rgba(0,243,255,0.1)] relative overflow-hidden">
+            <h1 class="logo-text text-4xl mb-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 tracking-wider">SAHIL <span class="text-white">GAMES</span></h1>
+            <p class="text-gray-400 mb-8 text-sm font-medium tracking-widest uppercase">Central Authentication System</p>
 
-    <div id="auth-page" class="fixed inset-0 z-[200] hidden flex-col items-center justify-center bg-darkBase/90 backdrop-blur-md">
-        <div class="absolute inset-0 bg-gradient-radial from-neonBlue/5 via-transparent to-transparent"></div>
-        
-        <div class="glass-panel w-full max-w-md p-8 rounded-2xl relative z-10 shadow-[0_0_50px_rgba(0,0,0,0.5)] border-t border-neonBlue/30">
-            <div class="text-center mb-8">
-                <h1 class="text-4xl font-orbitron font-black text-white mb-2">SAHIL <span class="text-neonBlue">ID</span></h1>
-                <p class="text-gray-400 text-sm">Access your games, points, and library.</p>
-            </div>
-
-            <!-- Auth Error Message Box -->
-            <div id="auth-error" class="hidden mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 text-sm text-center font-bold"></div>
-
-            <!-- Tabs -->
-            <div class="flex border-b border-white/10 mb-6 relative">
-                <button onclick="switchAuthTab('login')" id="tab-login" class="flex-1 py-3 text-sm font-bold font-orbitron text-neonBlue border-b-2 border-neonBlue transition-colors">LOGIN</button>
-                <button onclick="switchAuthTab('register')" id="tab-register" class="flex-1 py-3 text-sm font-bold font-orbitron text-gray-500 border-b-2 border-transparent hover:text-white transition-colors">REGISTER</button>
-            </div>
-
-            <!-- Forms Container -->
-            <div id="auth-forms">
-                <!-- Login Form -->
-                <form id="login-form" class="space-y-4" onsubmit="handleAuth(event, 'login')">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1 ml-1">Username</label>
-                        <input type="text" id="login-username" required class="auth-input" placeholder="Enter username">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1 ml-1">Password</label>
-                        <input type="password" id="login-password" required class="auth-input" placeholder="••••••••">
-                    </div>
-                    <button type="submit" class="w-full mt-6 bg-neonBlue hover:bg-cyan-400 text-black font-orbitron font-bold py-3 rounded-lg transition-all shadow-[0_0_15px_rgba(0,243,255,0.4)] hover:shadow-[0_0_25px_rgba(0,243,255,0.6)]">
-                        INITIALIZE LOGIN
-                    </button>
-                </form>
-
-                <!-- Register Form -->
-                <form id="register-form" class="space-y-4 hidden" onsubmit="handleAuth(event, 'register')">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1 ml-1">Choose Username</label>
-                        <input type="text" id="reg-username" required minlength="3" class="auth-input" placeholder="Min 3 characters">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase mb-1 ml-1">Create Password</label>
-                        <input type="password" id="reg-password" required minlength="4" class="auth-input" placeholder="Min 4 characters">
-                    </div>
-                    <button type="submit" class="w-full mt-6 bg-neonPurple hover:bg-fuchsia-500 text-white font-orbitron font-bold py-3 rounded-lg transition-all shadow-[0_0_15px_rgba(188,19,254,0.4)] hover:shadow-[0_0_25px_rgba(188,19,254,0.6)]">
-                        CREATE ACCOUNT
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div id="intro-page" class="fixed inset-0 z-[150] hidden flex-col items-center justify-center bg-darkBase transition-all duration-1000">
-        <div class="absolute inset-0 bg-gradient-radial from-neonBlue/10 via-darkBase to-darkBase"></div>
-        <div class="relative z-10 flex flex-col items-center text-center px-4">
-            <h1 class="text-6xl md:text-8xl font-orbitron font-black tracking-widest text-transparent bg-clip-text bg-white mb-2 animate-neon-pulse" style="text-shadow: 0 0 20px rgba(0, 243, 255, 0.8);">
-                SAHIL <span class="text-gradient">GAMES</span>
-            </h1>
-            <p class="text-xl md:text-2xl font-medium text-gray-400 tracking-widest mb-12 opacity-80">
-                PLAY GAMES. <span class="text-neonBlue">EARN POINTS.</span> UNLOCK MORE.
-            </p>
-            <div id="loading-container" class="w-64 md:w-96 flex flex-col items-center">
-                <div class="w-full h-2 bg-gray-800 rounded-full overflow-hidden mb-2 relative">
-                    <div id="loading-bar" class="h-full bg-gradient-to-r from-neonBlue to-neonPurple w-0 transition-all duration-[2000ms] ease-out shadow-[0_0_10px_#00f3ff]"></div>
+            <form id="authForm" class="w-full flex flex-col gap-4 relative z-10" onsubmit="handleAuth(event)">
+                <div id="userContainer" class="hidden relative">
+                    <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                    <input type="text" id="authUsername" placeholder="CREATE USERNAME" class="w-full bg-black/50 border border-gray-700/50 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:border-cyan-500 transition-all">
                 </div>
-                <div class="text-sm font-orbitron text-neonBlue tracking-widest uppercase animate-pulse">Initializing System <span id="loading-percent">0</span>%</div>
+                <div class="relative">
+                    <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                    <input type="email" id="authEmail" placeholder="EMAIL ADDRESS" required class="w-full bg-black/50 border border-gray-700/50 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:border-cyan-500 transition-all">
+                </div>
+                <div class="relative">
+                    <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                    <input type="password" id="authPassword" placeholder="PASSWORD" required class="w-full bg-black/50 border border-gray-700/50 rounded-xl py-3 pl-12 pr-4 text-white outline-none focus:border-cyan-500 transition-all">
+                </div>
+                <div id="authError" class="text-red-400 text-sm text-center hidden bg-red-500/10 py-2 rounded-lg border border-red-500/20"></div>
+                <button type="submit" id="authSubmitBtn" class="btn-neon w-full py-4 rounded-xl text-white font-bold tracking-widest text-lg mt-2" data-mode="login">LOGIN</button>
+            </form>
+
+            <div class="mt-6 flex gap-2 text-sm text-gray-400">
+                <span id="authToggleText">Don't have an account?</span>
+                <button type="button" onclick="toggleAuthMode('register')" id="authToggleBtn" class="text-cyan-400 font-semibold">Register Now</button>
             </div>
-            <button id="enter-btn" class="hidden mt-8 group relative px-8 py-4 bg-transparent font-orbitron font-bold text-xl tracking-widest overflow-hidden rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none">
-                <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-neonBlue to-neonPurple opacity-70 group-hover:opacity-100 transition-opacity"></span>
-                <span class="absolute inset-[2px] bg-darkBase rounded-lg z-10 transition-colors group-hover:bg-opacity-0"></span>
-                <span class="relative z-20 flex items-center gap-3 text-white group-hover:text-white transition-colors">
-                    ENTER PLATFORM <i class="fas fa-chevron-right text-sm animate-bounce-x"></i>
-                </span>
-            </button>
         </div>
     </div>
 
-    <div id="homePage" class="w-full h-full hidden">
-        <div id="main-app" class="relative z-10 opacity-0 invisible translate-y-8 transition-all duration-1000">
-            
-            <!-- Mobile Sidebar Overlay -->
-            <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[45] hidden md:hidden transition-opacity" onclick="closeSidebar()"></div>
-
-            <!-- Sidebar -->
-            <aside class="sidebar flex flex-col">
-                <div class="p-6 pb-2 flex justify-between items-center">
-                    <h2 class="text-2xl font-orbitron font-bold tracking-wider text-white flex items-center gap-2 cursor-pointer">
-                        <i class="fas fa-gamepad text-neonBlue"></i> SAHIL<span class="text-neonPurple">G</span>
-                    </h2>
-                    <button onclick="closeSidebar()" class="md:hidden text-gray-400 hover:text-white p-2">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
+    <div id="mainApp" class="flex h-screen w-full relative">
+        <aside id="sidebar" class="w-64 glass-panel border-y-0 border-l-0 rounded-none flex flex-col justify-between py-6 shrink-0 bg-black/90">
+            <div>
+                <div class="px-8 mb-10 flex items-center gap-3">
+                    <i class="fas fa-gamepad text-3xl text-cyan-400"></i>
+                    <h2 class="logo-text text-2xl font-bold tracking-wider">SAHIL <span class="text-purple-500">G</span></h2>
                 </div>
-                
-                <nav class="flex-1 px-4 mt-8 space-y-2 overflow-y-auto">
-                    <p class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 ml-2">Menu</p>
-                    <button onclick="switchView('store')" id="nav-store" class="nav-link active w-full flex items-center gap-4 px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all group">
-                        <i class="fas fa-store group-hover:text-neonBlue transition-colors w-5 text-center"></i> Store
-                    </button>
-                    <button onclick="switchView('library')" id="nav-library" class="nav-link w-full flex items-center gap-4 px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all group">
-                        <i class="fas fa-layer-group group-hover:text-neonPurple transition-colors w-5 text-center"></i> Library
-                    </button>
-                    <button class="nav-link w-full flex items-center gap-4 px-4 py-3 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all group">
-                        <i class="fas fa-users group-hover:text-neonBlue transition-colors w-5 text-center"></i> Community
-                    </button>
+                <nav class="flex flex-col gap-2 px-4">
+                    <a href="#" onclick="switchTab('store')" class="nav-item flex items-center gap-4 px-4 py-3 rounded-xl bg-gradient-to-r from-cyan-500/20 to-transparent border-l-2 border-cyan-400 text-white">
+                        <i class="fas fa-store text-cyan-400"></i><span class="font-medium">Store</span>
+                    </a>
+                    <a href="#" onclick="switchTab('library')" class="nav-item flex items-center gap-4 px-4 py-3 rounded-xl text-gray-400 hover:text-white">
+                        <i class="fas fa-layer-group"></i><span class="font-medium">Library</span>
+                    </a>
                 </nav>
+            </div>
+            <div class="px-6">
+                <div class="glass-panel p-4 flex items-center gap-3 border-green-500/20">
+                    <div class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></div>
+                    <span class="text-sm text-gray-400">Server Online</span>
+                    <span class="ml-auto text-xs font-bold text-cyan-400" id="playerCount">24,491</span>
+                </div>
+            </div>
+        </aside>
 
-                <div class="p-4 border-t border-white/5 mt-auto">
-                    <div class="glass-panel p-3 rounded-lg flex items-center justify-between">
-                        <div class="flex items-center gap-2">
-                            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                            <span class="text-xs text-gray-400 font-orbitron">Server Online</span>
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+            <header class="h-20 glass-panel border-x-0 border-t-0 rounded-none flex items-center justify-between px-8 bg-black/50 relative z-50">
+                <div class="flex-1 max-w-xl bg-black/50 border border-gray-800 rounded-full px-5 py-2.5 flex items-center gap-3">
+                    <i class="fas fa-search text-gray-500"></i>
+                    <input type="text" placeholder="Search games..." class="bg-transparent border-none outline-none w-full text-sm">
+                </div>
+
+                <div class="flex items-center gap-6 ml-auto">
+                    <div class="flex items-center gap-3 bg-gradient-to-r from-purple-900/40 to-transparent border border-purple-500/30 rounded-full pl-1 pr-4 py-1">
+                        <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
+                            <i class="fas fa-bolt text-sm"></i>
                         </div>
-                        <span class="text-xs text-neonBlue font-bold" id="online-players">24,591</span>
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-gray-400 uppercase font-bold">Balance</span>
+                            <span class="text-sm font-bold"><span id="headerPoints">0</span> <span class="text-purple-400 text-xs">PTS</span></span>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <button onclick="toggleProfileMenu()" class="flex items-center gap-3">
+                            <div class="flex flex-col items-end">
+                                <span id="headerUsername" class="text-sm font-bold">Player</span>
+                                <span class="text-xs text-cyan-400">LVL <span id="headerLevel">0</span></span>
+                            </div>
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-500 to-blue-600 p-[2px]">
+                                <div class="w-full h-full bg-black rounded-full flex items-center justify-center overflow-hidden">
+                                    <span class="text-lg font-bold" id="headerInitials">P</span>
+                                </div>
+                            </div>
+                        </button>
+
+                        <!-- Profile Dropdown -->
+                        <div id="profileMenu" class="hidden absolute right-0 top-[120%] w-72 glass-panel p-1 border-gray-700/50 shadow-2xl bg-[#0a0a0e] z-[99999]">
+                            <div class="p-4 border-b border-white/5 flex flex-col gap-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center text-xl font-bold" id="dropdownInitials">P</div>
+                                    <div>
+                                        <h3 class="font-bold text-lg" id="profileUsername">Player</h3>
+                                        <span class="text-xs text-green-400">Online</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-cyan-400">Level <span id="profileLevel">0</span></span>
+                                        <span class="text-gray-400"><span id="profileExp">0</span> / <span id="profileReqExp">1</span> EXP</span>
+                                    </div>
+                                    <div class="w-full h-2 bg-black/60 rounded-full overflow-hidden">
+                                        <div id="expBarProgress" class="h-full bg-gradient-to-r from-cyan-500 to-purple-500" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-2 grid grid-cols-2 gap-2 text-center">
+                                <div class="bg-white/5 rounded-lg p-2">
+                                    <p class="text-[10px] text-gray-500 uppercase font-bold">Playtime</p>
+                                    <p class="text-sm font-semibold text-cyan-300" id="profilePlaytimeStr">00h 00m 00s</p>
+                                </div>
+                                <div class="bg-white/5 rounded-lg p-2">
+                                    <p class="text-[10px] text-gray-500 uppercase font-bold">Library</p>
+                                    <p class="text-sm font-semibold text-purple-300"><span id="profileGamesCount">0</span> Games</p>
+                                </div>
+                            </div>
+                            <button onclick="handleLogout()" class="w-full text-left px-3 py-3 text-sm text-gray-300 hover:bg-white/10 rounded-lg flex items-center gap-2 border-t border-white/5">
+                                <i class="fas fa-sign-out-alt ml-1"></i> Logout
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </aside>
+            </header>
 
-            <main class="content-area w-full">
-                <header class="h-16 md:h-20 glass-panel border-b border-white/5 flex items-center justify-between px-4 md:px-6 shrink-0 relative z-40">
-                    <div class="md:hidden flex items-center gap-3">
-                        <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white p-2 -ml-2"><i class="fas fa-bars text-xl"></i></button>
-                        <h2 class="text-lg font-orbitron font-bold text-white">SAHIL<span class="text-neonPurple">G</span></h2>
+            <div id="storeContent" class="flex-1 overflow-y-auto p-8">
+                <div class="w-full h-[400px] rounded-3xl overflow-hidden relative mb-12 group border border-gray-800">
+                    <img src="g1.png" class="w-full h-full object-contain opacity-60 absolute inset-0">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 p-10 w-2/3">
+                        <span class="px-3 py-1 bg-cyan-500 text-black text-xs font-bold rounded-full mb-4 inline-block">FREE TO PLAY</span>
+                        <h1 class="logo-text text-6xl font-bold mb-4">GTA <span class="text-cyan-400">WEB</span></h1>
+                        <p class="text-gray-300 mb-6 max-w-xl">Ultimate open-world experience in your browser. Join the alpha today.</p>
+                        <button onclick="handleGameClick('gta-web')" class="bg-white text-black px-8 py-3 rounded-xl font-bold hover:bg-gray-200 transition-colors">View Details</button>
                     </div>
-
-                    <div class="hidden md:flex flex-1 max-w-md relative group">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i class="fas fa-search text-gray-500 group-focus-within:text-neonBlue transition-colors"></i>
-                        </div>
-                        <input type="text" placeholder="Search games, users, tags..." class="w-full bg-darkPanel/50 border border-white/10 rounded-full py-2.5 pl-11 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-neonBlue focus:ring-1 focus:ring-neonBlue transition-all glass-panel">
-                    </div>
-
-                    <div class="flex items-center gap-3 md:gap-6 ml-auto relative">
-                        <div class="glass-panel px-3 md:px-4 py-1.5 rounded-full flex items-center gap-2 md:gap-3 border border-neonPurple/30 shadow-[0_0_10px_rgba(188,19,254,0.1)]">
-                            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-gradient-to-br from-neonPurple to-neonBlue flex items-center justify-center"><i class="fas fa-bolt text-white text-[10px] md:text-xs"></i></div>
-                            <div class="flex flex-col">
-                                <span class="hidden md:block text-[10px] text-gray-400 font-orbitron leading-none mb-1">BALANCE</span>
-                                <span class="text-xs md:text-sm font-bold text-white leading-none"><span id="ui-points">0</span> <span class="text-neonPurple text-[10px] md:text-sm">PTS</span></span>
-                            </div>
-                        </div>
-
-                        <!-- Profile Icon / Menu Toggle -->
-                        <div class="relative flex items-center gap-2 md:gap-3 cursor-pointer group" onclick="toggleProfileMenu(event)">
-                            <div class="hidden md:flex flex-col items-end">
-                                <span class="text-sm font-bold text-white" id="ui-username">Guest</span>
-                                <span class="text-[10px] text-neonBlue">LVL <span id="ui-level">1</span></span>
-                            </div>
-                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white/10 p-0.5 relative">
-                                <img id="ui-avatar" src="https://placehold.co/100x100/1a1a2e/00f3ff?text=US" alt="Profile" class="w-full h-full rounded-full object-cover">
-                                <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-darkBase rounded-full"></div>
-                            </div>
-
-                            <!-- Profile Dropdown -->
-                            <div id="profile-dropdown" class="hidden absolute top-full mt-4 -right-2 md:right-0 w-[calc(100vw-2rem)] md:w-72 max-w-[320px] glass-panel border border-white/10 rounded-xl overflow-hidden shadow-[0_0_40px_rgba(0,0,0,0.8)] z-50 transform origin-top-right transition-all">
-                                <div class="p-4 md:p-5 border-b border-white/10 bg-darkPanel/90 relative overflow-hidden">
-                                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-neonBlue/20 rounded-full blur-3xl pointer-events-none"></div>
-                                    <div class="flex justify-between items-start mb-3">
-                                        <div class="pr-2">
-                                            <p class="text-[10px] text-neonBlue font-bold uppercase tracking-widest mb-1 opacity-80">Connected Agent</p>
-                                            <p id="drop-username" class="text-xl font-orbitron font-black text-white truncate drop-shadow-md">User</p>
-                                        </div>
-                                        <div class="bg-black/60 px-3 py-1.5 rounded-lg border border-white/10 text-center flex flex-col items-center shadow-inner min-w-[60px]">
-                                            <span class="text-[9px] text-gray-400 font-orbitron tracking-wider">LEVEL</span>
-                                            <span id="drop-level" class="text-xl font-bold text-neonBlue leading-none">0</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- EXP Bar HUD -->
-                                    <div class="mt-4 bg-black/40 p-3 rounded-lg border border-white/5">
-                                        <div class="flex justify-between text-xs mb-2">
-                                            <span class="text-gray-400 font-medium">EXP: <span id="drop-exp" class="text-white font-bold">0</span> <span class="text-gray-600">/</span> <span id="drop-exp-req" class="text-gray-500">1</span></span>
-                                            <span id="drop-exp-percent" class="text-neonPurple font-bold">0%</span>
-                                        </div>
-                                        <div class="w-full h-2.5 bg-darkBase rounded-full overflow-hidden border border-white/10 relative shadow-inner">
-                                            <div id="drop-exp-bar" class="absolute top-0 left-0 h-full bg-gradient-to-r from-neonBlue to-neonPurple w-0 transition-all duration-700 ease-out shadow-[0_0_15px_#bc13fe]"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="p-2 space-y-1 bg-darkBase/95">
-                                    <div class="px-3 py-2.5 flex justify-between items-center text-sm rounded-lg hover:bg-white/5 transition-colors group">
-                                        <span class="text-gray-400 group-hover:text-white transition-colors"><i class="fas fa-clock text-blue-400 mr-2 w-5 text-center"></i> Playtime</span>
-                                        <span class="font-bold text-white"><span id="drop-playtime">0</span> <span class="text-xs text-gray-500 font-normal">MIN</span></span>
-                                    </div>
-                                    <div class="px-3 py-2.5 flex justify-between items-center text-sm rounded-lg hover:bg-white/5 transition-colors group">
-                                        <span class="text-gray-400 group-hover:text-white transition-colors"><i class="fas fa-coins text-yellow-400 mr-2 w-5 text-center"></i> Total Points</span>
-                                        <span class="font-bold text-white"><span id="drop-points">0</span> <span class="text-xs text-neonPurple font-normal">PTS</span></span>
-                                    </div>
-                                    <div class="px-3 py-2.5 flex justify-between items-center text-sm rounded-lg hover:bg-white/5 transition-colors group">
-                                        <span class="text-gray-400 group-hover:text-white transition-colors"><i class="fas fa-layer-group text-green-400 mr-2 w-5 text-center"></i> Library</span>
-                                        <span id="drop-games" class="font-bold text-white">0</span>
-                                    </div>
-                                </div>
-                                
-                                <!-- Placeholders -->
-                                <div class="p-3 grid grid-cols-2 gap-3 border-t border-white/5 bg-black/60">
-                                    <div class="glass-panel p-2 rounded-lg flex flex-col items-center justify-center text-center border-orange-500/20 hover:border-orange-500/50 transition-colors">
-                                        <i class="fas fa-fire text-orange-500 mb-1 text-lg"></i>
-                                        <span class="text-[9px] text-gray-400 uppercase tracking-wider mb-0.5">Daily Streak</span>
-                                        <span class="text-xs font-bold text-white">1 Day</span>
-                                    </div>
-                                    <div class="glass-panel p-2 rounded-lg flex flex-col items-center justify-center text-center border-yellow-500/20 hover:border-yellow-500/50 transition-colors">
-                                        <i class="fas fa-trophy text-yellow-500 mb-1 text-lg"></i>
-                                        <span class="text-[9px] text-gray-400 uppercase tracking-wider mb-0.5">Achievements</span>
-                                        <span class="text-xs font-bold text-white">0 / 50</span>
-                                    </div>
-                                </div>
-
-                                <div class="p-3 border-t border-white/10 bg-darkPanel space-y-2">
-                                    <button onclick="resetStats()" class="w-full px-3 py-2.5 text-center text-xs font-orbitron tracking-widest text-orange-400 font-bold hover:text-white hover:bg-orange-500/80 rounded-lg transition-all flex items-center justify-center shadow-[0_0_10px_transparent] hover:shadow-[0_0_20px_rgba(249,115,22,0.4)]">
-                                        <i class="fas fa-undo mr-2"></i> RESET STATS TO 0
-                                    </button>
-                                    <button onclick="logoutUser()" class="w-full px-3 py-2.5 text-center text-xs font-orbitron tracking-widest text-red-400 font-bold hover:text-white hover:bg-red-500/80 rounded-lg transition-all flex items-center justify-center shadow-[0_0_10px_transparent] hover:shadow-[0_0_20px_rgba(239,68,68,0.4)]">
-                                        <i class="fas fa-power-off mr-2"></i> SYSTEM LOGOUT
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </header>
-
-                <div class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-10 scroll-area pb-24 relative z-10" onclick="closeProfileMenu()">
-                    
-                    <!-- === STORE VIEW === -->
-                    <div id="store-view" class="view-section">
-                        <!-- Hero Banner -->
-                        <div class="relative w-full h-[250px] md:h-[400px] rounded-2xl overflow-hidden group cursor-pointer mb-8 md:mb-12 bg-black border border-white/5" onclick="openGameDetails('gta-web')">
-                            <img src="g1.png" alt="Hero Background" class="absolute inset-0 w-full h-full object-contain object-center opacity-80 group-hover:scale-105 transition-transform duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-darkBase via-darkBase/50 to-transparent"></div>
-                            <div class="absolute inset-0 bg-gradient-to-r from-darkBase via-darkBase/30 to-transparent md:block hidden"></div>
-                            
-                            <div class="absolute bottom-0 left-0 p-4 md:p-12 w-full md:w-2/3 z-10 pointer-events-none">
-                                <span class="px-2 py-0.5 md:px-3 md:py-1 bg-neonBlue/20 text-neonBlue border border-neonBlue/50 rounded-full text-[10px] md:text-xs font-bold tracking-wider mb-2 md:mb-4 inline-block animate-pulse pointer-events-auto">FREE TO PLAY</span>
-                                <h2 class="text-3xl md:text-6xl font-orbitron font-black text-white mb-1 md:mb-2 drop-shadow-2xl">GTA <span class="text-neonBlue">WEB</span></h2>
-                                <p class="text-gray-300 text-xs md:text-base mb-4 md:mb-6 max-w-lg drop-shadow-md line-clamp-2 md:line-clamp-none">The ultimate open-world browser experience. Currently in active development. Claim it for free now and start exploring the city.</p>
-                                <button class="px-4 py-2 md:px-6 md:py-3 bg-white text-black font-bold text-sm md:text-base rounded-lg shadow-[0_0_15px_rgba(255,255,255,0.5)] hover:bg-neonBlue transition-colors pointer-events-auto">
-                                    View Game Details
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Store Sections -->
-                        <div id="sections-container" class="space-y-10 md:space-y-16">
-                            <!-- Injected by JS -->
-                        </div>
-                    </div>
-
-                    <!-- === LIBRARY VIEW === -->
-                    <div id="library-view" class="view-section hidden">
-                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 md:mb-8 gap-4">
-                            <h2 class="text-3xl md:text-4xl font-orbitron font-black text-white flex items-center gap-3 md:gap-4">
-                                <i class="fas fa-layer-group text-neonPurple"></i> MY LIBRARY
-                            </h2>
-                            <div class="flex bg-darkPanel rounded-lg p-1 border border-white/5 w-full md:w-auto">
-                                <button class="flex-1 md:flex-none px-4 py-2 bg-white/10 rounded-md text-white text-xs md:text-sm font-bold shadow-sm">All Games</button>
-                                <button class="flex-1 md:flex-none px-4 py-2 text-gray-400 hover:text-white text-xs md:text-sm font-bold transition-colors">Installed</button>
-                            </div>
-                        </div>
-
-                        <div id="library-empty-state" class="hidden flex-col items-center justify-center py-10 md:py-20 text-center">
-                            <div class="w-24 h-24 rounded-full bg-darkPanel flex items-center justify-center mb-4 border border-white/5">
-                                <i class="fas fa-ghost text-4xl text-gray-600"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-white mb-2">Your library is empty</h3>
-                            <p class="text-gray-400 mb-6">Head to the store to claim free games or use your points.</p>
-                            <button onclick="switchView('store')" class="px-6 py-2 border border-neonBlue text-neonBlue rounded hover:bg-neonBlue/10 transition-colors shadow-[0_0_15px_rgba(0,243,255,0.2)]">Browse Store</button>
-                        </div>
-
-                        <!-- Use Grid standard aspect ratio structure -->
-                        <div id="library-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                            <!-- Injected by JS -->
-                        </div>
-                    </div>
-                    
-                    <!-- Footer -->
-                    <footer class="mt-24 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500">
-                        <div class="flex items-center gap-2 mb-4 md:mb-0">
-                            <i class="fas fa-gamepad text-neonBlue"></i> <span class="font-orbitron">SAHIL GAMES</span>
-                        </div>
-                        <p>&copy; 2026 SAHIL GAMES. All rights reserved.</p>
-                    </footer>
                 </div>
-            </main>
-        </div>
+
+                <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> Trending Now</h3>
+                <div class="grid grid-cols-5 gap-6">
+                    <div id="gtaWebCard" class="game-card glass-panel rounded-2xl flex flex-col bg-[#111] border-gray-800" onclick="handleGameClick('gta-web')">
+                        <div class="aspect-[3/4] bg-black flex items-center justify-center overflow-hidden">
+                            <img src="g1.png" class="game-image w-full h-full object-contain">
+                        </div>
+                        <div class="p-5 flex flex-col flex-1">
+                            <h4 class="font-bold text-lg mb-1 uppercase">GTA WEB</h4>
+                            <p class="text-cyan-400 text-xs font-semibold mb-4 tracking-widest uppercase">IN DEVELOPMENT</p>
+                            <button id="gtaStoreBtn" class="w-full btn-neon py-2.5 rounded-lg text-sm font-bold mt-auto">GET GAME</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="libraryContent" class="flex-1 overflow-y-auto p-8 hidden">
+                <h2 class="text-3xl font-bold mb-8 border-b border-gray-800 pb-4">My Library</h2>
+                <div id="libraryGrid" class="grid grid-cols-5 gap-6"></div>
+                <div id="emptyLibraryMsg" class="hidden flex-col items-center justify-center py-20 opacity-50">
+                    <i class="fas fa-ghost text-6xl mb-4"></i>
+                    <p>Your library is empty.</p>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <div id="game-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/90 backdrop-blur-md opacity-0 transition-opacity duration-300 p-2 md:p-0">
-        <div class="absolute inset-0 cursor-pointer" onclick="closeGameDetails()"></div>
-        
-        <div id="game-modal-content" class="glass-panel w-full md:w-[80%] max-w-5xl h-[95vh] md:h-[85vh] rounded-2xl overflow-hidden relative transform scale-95 transition-transform duration-300 flex flex-col shadow-2xl shadow-neonBlue/20">
-            <button onclick="closeGameDetails()" class="absolute top-2 right-2 md:top-4 md:right-4 z-50 w-8 h-8 md:w-10 md:h-10 bg-black/50 hover:bg-red-500 rounded-full flex items-center justify-center text-white transition-colors border border-white/10">
-                <i class="fas fa-times text-lg md:text-xl"></i>
+    <div id="gamePage">
+        <div class="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-[9999]">
+            <button onclick="closeGame()" class="bg-black/50 hover:bg-red-500/80 text-white px-6 py-2 rounded-xl border border-white/10 font-bold flex items-center gap-2 backdrop-blur-md transition-all">
+                <i class="fas fa-arrow-left"></i> EXIT GAME
             </button>
+            <div class="text-cyan-400 font-bold bg-black/50 px-4 py-2 rounded-lg border border-cyan-500/30 backdrop-blur-md">IN DEVELOPMENT</div>
+        </div>
+        <iframe id="gameFrame" src="" frameborder="0" class="w-full h-full bg-black"></iframe>
+    </div>
 
-            <!-- Fixed cropping in modal header -->
-            <div class="relative w-full h-[25vh] md:h-[40vh] shrink-0 bg-black">
-                <img id="modal-img" src="" alt="Cover" class="w-full h-full object-contain object-center opacity-90">
-                <div class="absolute inset-0 bg-gradient-to-t from-darkBase via-darkBase/30 to-transparent"></div>
-                <div class="absolute bottom-4 left-4 md:bottom-6 md:left-8 z-10">
-                    <h2 id="modal-title" class="text-3xl md:text-5xl font-orbitron font-black text-white drop-shadow-lg mb-1 md:mb-2 leading-tight">GAME TITLE</h2>
-                    <span id="modal-status" class="bg-neonPurple/20 text-neonPurple border border-neonPurple/50 px-2 py-0.5 md:px-3 md:py-1 rounded text-[10px] md:text-xs font-bold uppercase tracking-wider backdrop-blur-sm shadow-lg">STATUS</span>
-                </div>
+    <div id="gameModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-4xl flex overflow-hidden rounded-3xl shadow-2xl">
+            <div class="w-1/2 bg-black flex items-center justify-center border-r border-white/5">
+                <img id="modalImg" src="g1.png" class="w-full h-full object-contain p-8">
             </div>
+            <div class="w-1/2 p-10 flex flex-col justify-center relative">
+                <button onclick="closeGameModal()" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+                <h2 id="modalTitle" class="text-4xl font-bold mb-2">GTA WEB</h2>
+                <p class="text-gray-400 mb-8 pb-8 border-b border-white/5">The ultimate open-world browser experience. Claim it now.</p>
+                <button id="modalActionBtn" class="btn-neon w-full py-4 rounded-xl text-lg font-bold tracking-widest">GET GAME</button>
+            </div>
+        </div>
+    </div>
 
-            <div class="flex-1 bg-darkBase p-4 md:p-8 overflow-y-auto flex flex-col lg:flex-row gap-6 md:gap-8">
-                <div class="flex-1">
-                    <h3 class="text-lg md:text-xl font-bold text-white mb-3 md:mb-4 border-b border-white/10 pb-2">About This Game</h3>
-                    <p id="modal-desc" class="text-sm md:text-base text-gray-300 leading-relaxed">Loading details...</p>
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5mF7T97Q_vVm0AymyKwlnsUFCVu1zEEM",
+            authDomain: "sahil-ec1de.firebaseapp.com",
+            projectId: "sahil-ec1de",
+            storageBucket: "sahil-ec1de.firebasestorage.app",
+            messagingSenderId: "299276548412",
+            appId: "1:299276548412:web:cc4b312b803c2846640639"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let activeUserData = null;
+        let saveInterval = null;
+        let timerInterval = null;
+
+        const GAME_DB = { 'gta-web': { id: 'gta-web', title: 'GTA WEB', url: 'https://sksahil32w-lab.github.io/sksahil/', image: 'g1.png' } };
+
+        // Handle Session Persistence and Login routing
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const docRef = doc(db, 'users', user.uid);
+                    const docSnap = await getDoc(docRef);
                     
-                    <div class="mt-4 md:mt-8 flex flex-wrap gap-2">
-                        <span class="px-2 py-1 md:px-3 md:py-1 bg-darkPanel border border-white/5 rounded text-[10px] md:text-xs text-gray-400">Action</span>
-                        <span class="px-2 py-1 md:px-3 md:py-1 bg-darkPanel border border-white/5 rounded text-[10px] md:text-xs text-gray-400">Open World</span>
-                        <span class="px-2 py-1 md:px-3 md:py-1 bg-darkPanel border border-white/5 rounded text-[10px] md:text-xs text-gray-400">Multiplayer</span>
-                    </div>
-                </div>
+                    if (docSnap.exists()) {
+                        activeUserData = docSnap.data();
+                        finalizeLoginUI();
+                    } else {
+                        // SELF-HEALING FIX: Auto-create the missing database file if it failed previously
+                        const defaultData = {
+                            username: user.email.split('@')[0], 
+                            email: user.email, level: 0, exp: 0, requiredExp: 1, points: 0,
+                            playtime: 0, gamesOwned: [], joinDate: new Date().toISOString()
+                        };
+                        await setDoc(docRef, defaultData);
+                        activeUserData = defaultData;
+                        finalizeLoginUI();
+                    }
+                } catch (e) {
+                    console.error(e);
+                    showToast("Database Error. Check connection.", "red");
+                }
+            } else {
+                showAuthScreen();
+            }
+        });
 
-                <!-- Action Sidebar -->
-                <div class="w-full lg:w-72 glass-panel p-4 md:p-6 rounded-xl border border-white/10 h-fit flex flex-col gap-4">
-                    <!-- Fixed cropping in modal thumbnail -->
-                    <div class="hidden md:flex w-full aspect-[3/4] bg-black rounded-lg border border-white/5 mb-2 overflow-hidden items-center justify-center">
-                        <img id="modal-thumb" src="" alt="Thumbnail" class="w-full h-full object-contain object-center">
-                    </div>
-                    
-                    <div class="flex justify-between items-center border-b border-white/5 pb-3 md:pb-4">
-                        <span class="text-gray-400 text-xs md:text-sm">Price</span>
-                        <span id="modal-price" class="text-lg md:text-xl font-bold text-white">FREE</span>
-                    </div>
+        window.handleAuth = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value;
+            const pass = document.getElementById('authPassword').value;
+            const mode = document.getElementById('authSubmitBtn').dataset.mode;
+            const btn = document.getElementById('authSubmitBtn');
+            
+            btn.disabled = true;
+            btn.innerText = "PROCESSING...";
 
-                    <div id="modal-action-container" class="mt-1 md:mt-2">
-                        <!-- Injected by JS (GET GAME or PLAY) -->
-                    </div>
-
-                    <p class="text-center text-[10px] text-gray-500 mt-2"><i class="fas fa-cloud text-neonBlue"></i> Cloud Saves Supported</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="launch-loader" class="fixed inset-0 z-[105] hidden flex-col items-center justify-center bg-darkBase">
-        <div class="relative w-32 h-32 mb-8">
-            <div class="absolute inset-0 border-4 border-neonBlue/20 rounded-full"></div>
-            <div class="absolute inset-0 border-4 border-t-neonBlue border-r-neonPurple border-b-transparent border-l-transparent rounded-full animate-spin"></div>
-            <i class="fas fa-gamepad absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl text-white"></i>
-        </div>
-        <h2 class="text-3xl font-orbitron font-bold text-white mb-2 animate-pulse">LAUNCHING</h2>
-        <p id="launch-game-title" class="text-neonBlue tracking-widest uppercase">GTA WEB</p>
-    </div>
-
-    <div id="gamePage" class="hidden fixed inset-0 z-[110] bg-[#050505] flex-col">
-        <div class="absolute top-0 left-0 w-full p-2 md:p-4 flex justify-between items-start pointer-events-none z-[120]">
-            <button onclick="closeGame()" class="pointer-events-auto bg-black/60 backdrop-blur border border-white/10 hover:border-neonBlue px-3 py-2 md:px-5 md:py-2.5 rounded-lg text-white font-orbitron font-bold transition-all shadow-lg hover:shadow-neonBlue/50 flex items-center gap-2 group text-xs md:text-base">
-                <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> <span class="hidden sm:inline">EXIT GAME</span>
-            </button>
-
-            <div class="flex flex-col items-end gap-2 md:gap-3 pointer-events-auto">
-                <div class="glass-panel px-2 py-1 md:px-4 md:py-1.5 border border-neonBlue text-neonBlue text-[10px] md:text-sm font-bold rounded shadow-[0_0_15px_rgba(0,243,255,0.4)] animate-pulse">
-                    IN DEVELOPMENT
-                </div>
-                
-                <button onclick="toggleControls()" class="hidden md:flex bg-black/60 backdrop-blur border border-white/10 px-4 py-2 rounded text-gray-300 hover:text-white transition-colors items-center gap-2 text-sm">
-                    <i class="fas fa-keyboard text-neonPurple"></i> Controls Help
-                </button>
-            </div>
-        </div>
-
-        <div id="controls-overlay" class="hidden absolute top-20 md:top-24 right-4 w-72 glass-panel p-6 rounded-xl border border-white/10 z-[120] pointer-events-auto shadow-2xl">
-            <h3 class="text-white font-orbitron font-bold mb-4 border-b border-white/10 pb-2">Game Controls</h3>
-            <ul class="space-y-3 text-sm text-gray-300">
-                <li class="flex justify-between"><span><kbd class="bg-white/10 border border-white/5 px-2 py-0.5 rounded shadow-sm">W A S D</kbd></span> <span>Move</span></li>
-                <li class="flex justify-between"><span><kbd class="bg-white/10 border border-white/5 px-2 py-0.5 rounded shadow-sm">Space</kbd></span> <span>Jump / Action</span></li>
-                <li class="flex justify-between"><span><kbd class="bg-white/10 border border-white/5 px-2 py-0.5 rounded shadow-sm">Shift</kbd></span> <span>Sprint</span></li>
-                <li class="flex justify-between"><span><kbd class="bg-white/10 border border-white/5 px-2 py-0.5 rounded shadow-sm">F</kbd></span> <span>Enter Vehicle</span></li>
-                <li class="flex justify-between"><span><kbd class="bg-white/10 border border-white/5 px-2 py-0.5 rounded shadow-sm">Mouse</kbd></span> <span>Look Around</span></li>
-            </ul>
-        </div>
-
-        <iframe id="gameFrame" src="" class="w-full h-full border-none m-0 p-0" allowfullscreen></iframe>
-    </div>
-
-    <script>
-        // --- Mobile Sidebar Logic ---
-        function toggleSidebar() {
-            document.querySelector('aside.sidebar').classList.toggle('open');
-            document.getElementById('mobile-sidebar-overlay').classList.toggle('hidden');
-        }
-        
-        function closeSidebar() {
-            document.querySelector('aside.sidebar').classList.remove('open');
-            document.getElementById('mobile-sidebar-overlay').classList.add('hidden');
-        }
-
-        // --- Game Database ---
-        const GAME_DB = {
-            'gta-web': {
-                id: 'gta-web',
-                title: 'GTA WEB',
-                status: 'IN DEVELOPMENT',
-                image: 'g1.png',
-                url: 'https://sksahil32w-lab.github.io/sksahil/',
-                price: 'FREE',
-                desc: 'Experience the ultimate open-world adventure directly in your browser. Complete missions, drive vehicles, and explore a massive city. Currently in active development phase by SAHIL GAMES.'
+            try {
+                if (mode === 'login') {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                } else {
+                    const username = document.getElementById('authUsername').value || email.split('@')[0];
+                    const res = await createUserWithEmailAndPassword(auth, email, pass);
+                    const defaultData = {
+                        username, email, level: 0, exp: 0, requiredExp: 1, points: 0,
+                        playtime: 0, gamesOwned: [], joinDate: new Date().toISOString()
+                    };
+                    // FIXED TYPO: Changed docDoc to doc
+                    await setDoc(doc(db, 'users', res.user.uid), defaultData);
+                }
+                // onAuthStateChanged will automatically take over and load the UI here
+            } catch (error) {
+                console.error(error);
+                let msg = error.message;
+                if(error.code === 'auth/email-already-in-use') msg = "Email in use. Please switch to Login.";
+                if(error.code === 'auth/invalid-credential') msg = "Incorrect email or password.";
+                if(error.code === 'auth/weak-password') msg = "Password should be at least 6 characters.";
+                showToast(msg, "red");
+                btn.disabled = false;
+                btn.innerText = mode.toUpperCase();
             }
         };
 
-        // --- Auth & Multi-User State ---
-        // Upgraded database keys to v2. This forces a clean wipe and deletes the glitched 505 points!
-        let usersDB = JSON.parse(localStorage.getItem('sahil_users_v2')) || {};
-        let activeUser = localStorage.getItem('sahil_active_user_v2') || null;
-        let pointsInterval;
-
-        function saveDB() {
-            localStorage.setItem('sahil_users_v2', JSON.stringify(usersDB));
-            if(activeUser) localStorage.setItem('sahil_active_user_v2', activeUser);
-            else localStorage.removeItem('sahil_active_user_v2');
+        function finalizeLoginUI() {
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'flex';
+            
+            document.getElementById('headerUsername').innerText = activeUserData.username;
+            document.getElementById('profileUsername').innerText = activeUserData.username;
+            document.getElementById('headerInitials').innerText = activeUserData.username[0].toUpperCase();
+            document.getElementById('dropdownInitials').innerText = activeUserData.username[0].toUpperCase();
+            
+            updateUI();
+            startTimers();
+            renderLibrary();
+            renderStore();
         }
 
-        // Check auth on boot
-        window.addEventListener('DOMContentLoaded', () => {
-            if (activeUser && usersDB[activeUser]) {
-                // Logged in
-                initUserSession();
-                showIntroSequence();
+        function showAuthScreen() {
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('authScreen').style.display = 'flex';
+        }
+
+        window.handleLogout = async () => {
+            await saveData();
+            clearInterval(saveInterval);
+            clearInterval(timerInterval);
+            await signOut(auth);
+            location.reload();
+        };
+
+        function startTimers() {
+            clearInterval(timerInterval);
+            clearInterval(saveInterval);
+
+            timerInterval = setInterval(() => {
+                if (!document.hidden) {
+                    activeUserData.playtime++;
+                    if (activeUserData.playtime % 60 === 0) {
+                        activeUserData.exp++;
+                        activeUserData.points++;
+                        checkLevel();
+                        showToast("+1 Point & EXP Earned!", "purple");
+                    }
+                    updateUI();
+                }
+            }, 1000);
+
+            saveInterval = setInterval(saveData, 30000);
+        }
+
+        async function saveData() {
+            if (!auth.currentUser || !activeUserData) return;
+            await updateDoc(doc(db, 'users', auth.currentUser.uid), activeUserData);
+        }
+
+        function checkLevel() {
+            if (activeUserData.exp >= activeUserData.requiredExp) {
+                activeUserData.exp -= activeUserData.requiredExp;
+                activeUserData.level++;
+                activeUserData.requiredExp = Math.pow(2, activeUserData.level);
+                showToast(`LEVEL UP! LVL ${activeUserData.level}`, "green");
+                saveData();
+            }
+        }
+
+        function updateUI() {
+            const h = Math.floor(activeUserData.playtime / 3600).toString().padStart(2, '0');
+            const m = Math.floor((activeUserData.playtime % 3600) / 60).toString().padStart(2, '0');
+            const s = (activeUserData.playtime % 60).toString().padStart(2, '0');
+            
+            document.getElementById('profilePlaytimeStr').innerText = `${h}h ${m}m ${s}s`;
+            document.getElementById('headerPoints').innerText = activeUserData.points;
+            document.getElementById('headerLevel').innerText = activeUserData.level;
+            document.getElementById('profileLevel').innerText = activeUserData.level;
+            document.getElementById('profileExp').innerText = activeUserData.exp;
+            document.getElementById('profileReqExp').innerText = activeUserData.requiredExp;
+            document.getElementById('expBarProgress').style.width = (activeUserData.exp / activeUserData.requiredExp * 100) + '%';
+        }
+
+        window.handleGameClick = (id) => {
+            const game = GAME_DB[id];
+            document.getElementById('modalTitle').innerText = game.title;
+            document.getElementById('modalImg').src = game.image;
+            const btn = document.getElementById('modalActionBtn');
+            
+            if (activeUserData.gamesOwned.includes(id)) {
+                btn.innerText = "PLAY NOW";
+                btn.onclick = () => { closeGameModal(); openGame(id); };
             } else {
-                // Show Auth
-                document.getElementById('auth-page').classList.remove('hidden');
-                document.getElementById('auth-page').classList.add('flex');
+                btn.innerText = "GET GAME";
+                btn.onclick = () => claimGame(id);
             }
-        });
+            document.getElementById('gameModal').classList.remove('hidden');
+        };
 
-        // --- Auth UI Logic ---
-        function switchAuthTab(tab) {
-            document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
-            document.getElementById('register-form').classList.toggle('hidden', tab !== 'register');
-            
-            document.getElementById('tab-login').className = tab === 'login' 
-                ? 'flex-1 py-3 text-sm font-bold font-orbitron text-neonBlue border-b-2 border-neonBlue transition-colors'
-                : 'flex-1 py-3 text-sm font-bold font-orbitron text-gray-500 border-b-2 border-transparent hover:text-white transition-colors';
-                
-            document.getElementById('tab-register').className = tab === 'register'
-                ? 'flex-1 py-3 text-sm font-bold font-orbitron text-neonPurple border-b-2 border-neonPurple transition-colors'
-                : 'flex-1 py-3 text-sm font-bold font-orbitron text-gray-500 border-b-2 border-transparent hover:text-white transition-colors';
-            
-            hideAuthError();
+        async function claimGame(id) {
+            activeUserData.gamesOwned.push(id);
+            await saveData();
+            renderLibrary();
+            renderStore();
+            closeGameModal();
+            showToast("Game Added to Library!", "blue");
         }
 
-        function showAuthError(msg) {
-            const err = document.getElementById('auth-error');
-            err.innerText = msg;
-            err.classList.remove('hidden');
-        }
+        window.openGame = (id) => {
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('gamePage').style.display = 'flex';
+            document.getElementById('gameFrame').src = GAME_DB[id].url;
+        };
 
-        function hideAuthError() {
-            document.getElementById('auth-error').classList.add('hidden');
-        }
+        window.closeGame = () => {
+            document.getElementById('mainApp').style.display = 'flex';
+            document.getElementById('gamePage').style.display = 'none';
+            document.getElementById('gameFrame').src = '';
+        };
 
-        function handleAuth(e, type) {
-            e.preventDefault();
-            hideAuthError();
+        function renderLibrary() {
+            const grid = document.getElementById('libraryGrid');
+            const empty = document.getElementById('emptyLibraryMsg');
+            grid.innerHTML = '';
             
-            if (type === 'login') {
-                const u = document.getElementById('login-username').value.trim();
-                const p = document.getElementById('login-password').value;
-                if(!usersDB[u]) return showAuthError('Username does not exist.');
-                if(usersDB[u].password !== p) return showAuthError('Incorrect password.');
-                
-                activeUser = u;
-                saveDB();
-                document.getElementById('auth-page').classList.add('hidden');
-                document.getElementById('auth-page').classList.remove('flex');
-                initUserSession();
-                showIntroSequence();
-                
-            } else if (type === 'register') {
-                const u = document.getElementById('reg-username').value.trim();
-                const p = document.getElementById('reg-password').value;
-                if(u.length < 3) return showAuthError('Username too short.');
-                if(p.length < 4) return showAuthError('Password too short.');
-                if(usersDB[u]) return showAuthError('Username already taken.');
-                
-                // CRITICAL FIX: Ensure completely fresh stats starting at exactly 0
-                usersDB[u] = { 
-                    password: p, 
-                    points: 0, 
-                    level: 0, 
-                    exp: 0, 
-                    playtime: 0, 
-                    library: [] 
-                };
-                activeUser = u;
-                saveDB();
-                
-                document.getElementById('auth-page').classList.add('hidden');
-                document.getElementById('auth-page').classList.remove('flex');
-                initUserSession();
-                showIntroSequence();
-            }
-        }
-
-        // --- Session & Point Logic ---
-        function initUserSession() {
-            updateProfileUI();
-        }
-
-        // --- Realistic Progression System ---
-        let gameplayInterval;
-
-        function startGameTimer() {
-            if(gameplayInterval) clearInterval(gameplayInterval);
-            
-            // CRITICAL FIX: Set to exactly 60000ms (1 minute) for realistic progression
-            gameplayInterval = setInterval(() => {
-                if(activeUser && usersDB[activeUser]) {
-                    usersDB[activeUser].points = (usersDB[activeUser].points || 0) + 1;
-                    usersDB[activeUser].exp = (usersDB[activeUser].exp || 0) + 1;
-                    usersDB[activeUser].playtime = (usersDB[activeUser].playtime || 0) + 1;
-                    
-                    showToast('<i class="fas fa-star text-neonPurple mr-1"></i> +1 EXP  |  <i class="fas fa-coins text-yellow-400 mr-1 ml-2"></i> +1 POINT', 'text-white border-neonPurple/50 shadow-[0_0_15px_rgba(188,19,254,0.3)]');
-                    checkLevelUp();
-                    
-                    saveDB();
-                    updateProfileUI();
-                }
-            }, 60000); // 60,000 ms = 1 real-world minute
-        }
-
-        function stopGameTimer() {
-            if(gameplayInterval) clearInterval(gameplayInterval);
-            gameplayInterval = null;
-        }
-
-        // Anti-AFK: Pause timer when user switches browser tabs or hides the window
-        document.addEventListener("visibilitychange", () => {
-            const gamePage = document.getElementById('gamePage');
-            if (gamePage && !gamePage.classList.contains('hidden')) {
-                if (document.hidden) {
-                    stopGameTimer();
-                } else {
-                    startGameTimer();
-                    showToast('<i class="fas fa-play text-neonBlue mr-2"></i> Welcome back! Playtime timer resumed.', 'text-white border-neonBlue/50 shadow-[0_0_15px_rgba(0,243,255,0.3)]');
-                }
-            }
-        });
-
-        function checkLevelUp() {
-            let uData = usersDB[activeUser];
-            let leveledUp = false;
-            
-            while(true) {
-                let requiredExp = Math.pow(2, uData.level);
-                if (uData.exp >= requiredExp) {
-                    uData.exp -= requiredExp;
-                    uData.level += 1;
-                    leveledUp = true;
-                } else {
-                    break;
-                }
-            }
-
-            if (leveledUp) {
-                showLevelUpPopup(uData.level);
-                showToast(`<i class="fas fa-angle-double-up text-neonBlue mr-2"></i> You reached Level ${uData.level}!`, 'text-white border-neonBlue/50');
-            }
-        }
-
-        function showLevelUpPopup(newLevel) {
-            const overlay = document.getElementById('level-up-overlay');
-            const content = document.getElementById('level-up-content');
-            document.getElementById('level-up-number').innerText = newLevel;
-            
-            overlay.classList.remove('hidden');
-            overlay.classList.add('flex');
-            
-            // Animate In
-            setTimeout(() => {
-                content.classList.remove('scale-50', 'opacity-0');
-                content.classList.add('scale-100', 'opacity-100');
-            }, 50);
-            
-            // Animate Out
-            setTimeout(() => {
-                content.classList.remove('scale-100', 'opacity-100');
-                content.classList.add('scale-150', 'opacity-0');
-                setTimeout(() => {
-                    overlay.classList.add('hidden');
-                    overlay.classList.remove('flex');
-                    content.classList.remove('scale-150');
-                    content.classList.add('scale-50'); 
-                }, 500);
-            }, 4000);
-        }
-
-        function showToast(msg, colorClass) {
-            const toast = document.createElement('div');
-            toast.className = `glass-panel px-4 py-3 rounded-lg border border-white/10 ${colorClass} font-bold animate-fade-in-up text-sm shadow-[0_0_15px_rgba(0,0,0,0.5)] flex items-center gap-2 backdrop-blur-md`;
-            toast.innerHTML = msg;
-            document.getElementById('toast-container').appendChild(toast);
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-                setTimeout(() => toast.remove(), 500);
-            }, 3000);
-        }
-
-        function updateProfileUI() {
-            if(!activeUser) return;
-            
-            // Backwards compatibility for older accounts missing stats
-            usersDB[activeUser].exp = usersDB[activeUser].exp || 0;
-            usersDB[activeUser].playtime = usersDB[activeUser].playtime || 0;
-            usersDB[activeUser].points = usersDB[activeUser].points || 0;
-            
-            const uData = usersDB[activeUser];
-            
-            // Level Math
-            let requiredExp = Math.pow(2, uData.level);
-            let percent = Math.min(100, Math.max(0, (uData.exp / requiredExp) * 100));
-            
-            // Header
-            document.getElementById('ui-username').innerText = activeUser;
-            document.getElementById('ui-points').innerText = uData.points.toLocaleString();
-            document.getElementById('ui-level').innerText = uData.level;
-            
-            // Avatar letters
-            document.getElementById('ui-avatar').src = `https://placehold.co/100x100/1a1a2e/00f3ff?text=${activeUser.substring(0,2).toUpperCase()}`;
-            
-            // Dropdown Menu Updates
-            document.getElementById('drop-username').innerText = activeUser;
-            document.getElementById('drop-level').innerText = uData.level;
-            document.getElementById('drop-exp').innerText = Math.floor(uData.exp);
-            document.getElementById('drop-exp-req').innerText = requiredExp;
-            document.getElementById('drop-exp-percent').innerText = Math.floor(percent) + '%';
-            document.getElementById('drop-exp-bar').style.width = percent + '%';
-            
-            document.getElementById('drop-playtime').innerText = uData.playtime.toLocaleString();
-            document.getElementById('drop-points').innerText = uData.points.toLocaleString();
-            document.getElementById('drop-games').innerText = uData.library.length;
-        }
-
-        // --- Profile Dropdown Logic ---
-        function toggleProfileMenu(e) {
-            e.stopPropagation();
-            document.getElementById('profile-dropdown').classList.toggle('hidden');
-        }
-
-        function closeProfileMenu() {
-            document.getElementById('profile-dropdown').classList.add('hidden');
-        }
-
-        function logoutUser() {
-            activeUser = null;
-            saveDB();
-            window.location.reload(); // Hard reset state
-        }
-
-        function resetStats() {
-            if(!activeUser || !usersDB[activeUser]) return;
-            usersDB[activeUser].points = 0;
-            usersDB[activeUser].exp = 0;
-            usersDB[activeUser].level = 0;
-            usersDB[activeUser].playtime = 0;
-            saveDB();
-            updateProfileUI();
-            showToast('<i class="fas fa-check-circle text-green-400 mr-2"></i> Stats Reset to 0!', 'text-white border-green-500/50 shadow-[0_0_15px_rgba(34,197,94,0.3)]');
-        }
-
-        // --- App Initialization (Intro -> Main) ---
-        function showIntroSequence() {
-            const introPage = document.getElementById('intro-page');
-            const mainApp = document.getElementById('main-app');
-            const loadingBar = document.getElementById('loading-bar');
-            const loadingPercent = document.getElementById('loading-percent');
-            const enterBtn = document.getElementById('enter-btn');
-            
-            introPage.classList.remove('hidden');
-            introPage.classList.add('flex');
-            
-            let loadProgress = 0;
-            const loadInterval = setInterval(() => {
-                loadProgress += Math.floor(Math.random() * 15) + 5;
-                if (loadProgress >= 100) {
-                    loadProgress = 100; 
-                    clearInterval(loadInterval);
-                    setTimeout(() => {
-                        document.getElementById('loading-container').style.display = 'none';
-                        enterBtn.classList.remove('hidden'); enterBtn.classList.add('flex');
-                    }, 400);
-                }
-                loadingBar.style.width = loadProgress + '%';
-                loadingPercent.innerText = loadProgress;
-            }, 100);
-
-            enterBtn.onclick = () => {
-                introPage.classList.add('fade-out');
-                setTimeout(() => {
-                    introPage.style.display = 'none';
-                    document.getElementById('homePage').classList.remove('hidden');
-                    document.getElementById('homePage').style.display = 'block';
-                    mainApp.classList.remove('opacity-0', 'invisible', 'translate-y-8');
-                    mainApp.classList.add('fade-in');
-                    renderStore();
-                }, 800);
-            };
-        }
-
-        // --- View & Render Logic (Store & Library) ---
-        function switchView(viewName) {
-            if(window.innerWidth < 768) { closeSidebar(); }
-            
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active', 'bg-white/10'));
-            document.getElementById(`nav-${viewName}`).classList.add('active');
-
-            document.querySelectorAll('.view-section').forEach(el => {
-                el.classList.add('hidden');
-                el.classList.remove('fade-in');
-            });
-            
-            const activeView = document.getElementById(`${viewName}-view`);
-            activeView.classList.remove('hidden');
-            void activeView.offsetWidth; 
-            activeView.classList.add('fade-in');
-
-            if(viewName === 'library') renderLibrary();
-        }
-
-        function createGameCardHTML(gameObj, isDummy = false) {
-            if (isDummy) {
-                const hue = Math.floor(Math.random() * 360);
-                return `
-                    <div class="glass-panel rounded-xl overflow-hidden group cursor-pointer border border-white/5 relative flex flex-col hover-glow h-full">
-                        <div class="relative aspect-[3/4] w-full overflow-hidden bg-black flex items-center justify-center">
-                            <div class="absolute inset-0 opacity-30 group-hover:scale-110 transition-transform duration-500" style="background-color: hsl(${hue}, 30%, 15%)"></div>
-                            <i class="fas fa-gamepad text-4xl md:text-6xl text-white/30 relative z-10"></i>
-                            <div class="absolute inset-0 bg-gradient-to-t from-darkPanel via-darkPanel/20 to-transparent opacity-90 pointer-events-none"></div>
-                            <div class="absolute top-2 right-2 md:top-3 md:right-3 z-10"><span class="bg-black/60 text-[8px] md:text-[10px] font-bold px-1.5 py-0.5 md:px-2 md:py-1 rounded text-gray-300 border border-white/10 uppercase">COMING SOON</span></div>
-                        </div>
-                        <div class="p-3 md:p-4 flex flex-col flex-1 relative z-10 -mt-10 md:-mt-12 bg-gradient-to-t from-darkPanel via-darkPanel to-transparent pt-10 md:pt-12">
-                            <h3 class="text-base md:text-lg font-bold text-white mb-1 group-hover:text-neonBlue transition-colors line-clamp-1">${gameObj.title}</h3>
-                            <p class="text-[10px] md:text-xs text-gray-400">Action / RPG</p>
-                        </div>
+            if (activeUserData.gamesOwned.length === 0) {
+                empty.classList.replace('hidden', 'flex');
+            } else {
+                empty.classList.replace('flex', 'hidden');
+                activeUserData.gamesOwned.forEach(id => {
+                    const g = GAME_DB[id];
+                    grid.innerHTML += `<div class="game-card glass-panel rounded-2xl bg-[#111] overflow-hidden" onclick="openGame('${id}')">
+                        <img src="${g.image}" class="aspect-[3/4] w-full object-contain">
+                        <div class="p-4 text-sm font-bold uppercase">${g.title}</div>
                     </div>`;
+                });
             }
-
-            const userLib = usersDB[activeUser]?.library || [];
-            const isOwned = userLib.includes(gameObj.id);
-            const badgeText = isOwned ? 'IN LIBRARY' : 'FREE';
-            const badgeColor = isOwned ? 'bg-green-500/20 text-green-400 border-green-500/50' : 'bg-neonBlue/20 text-neonBlue border-neonBlue/50';
-
-            return `
-                <div class="glass-panel rounded-xl overflow-hidden group cursor-pointer border border-white/5 relative flex flex-col hover-glow h-full" onclick="openGameDetails('${gameObj.id}')">
-                    <!-- Standard Epic/Steam 3:4 Aspect Ratio with proper image fitting -->
-                    <div class="relative aspect-[3/4] w-full overflow-hidden bg-black flex items-center justify-center">
-                        <img src="${gameObj.image}" alt="${gameObj.title}" class="absolute inset-0 w-full h-full object-contain object-center group-hover:scale-110 transition-transform duration-700 ease-out">
-                        <div class="absolute inset-0 bg-gradient-to-t from-darkPanel via-transparent to-transparent opacity-90 pointer-events-none z-10"></div>
-                        <div class="absolute top-2 left-2 md:top-3 md:left-3 z-20">
-                            <span class="${badgeColor} backdrop-blur text-[8px] md:text-[10px] font-bold px-1.5 py-0.5 md:px-2 md:py-1 rounded border uppercase tracking-wider shadow-lg">
-                                ${badgeText}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-3 md:p-4 flex flex-col flex-1 relative z-20 -mt-10 md:-mt-12 bg-gradient-to-t from-darkPanel via-darkPanel to-transparent pt-10 md:pt-12 pointer-events-none">
-                        <h3 class="text-lg md:text-xl font-orbitron font-bold text-white mb-1 group-hover:text-neonBlue transition-colors line-clamp-1 drop-shadow-lg">${gameObj.title}</h3>
-                        <p class="text-[9px] md:text-[10px] text-neonBlue font-bold animate-pulse tracking-wider mb-1 md:mb-2">${gameObj.status}</p>
-                    </div>
-                </div>`;
+            document.getElementById('profileGamesCount').innerText = activeUserData.gamesOwned.length;
         }
 
         function renderStore() {
-            const container = document.getElementById('sections-container');
-            container.innerHTML = ''; 
-
-            const sections = [
-                { id: 'trending', title: 'Trending Now', icon: 'fa-fire', color: 'text-orange-500' },
-                { id: 'new', title: 'New Releases', icon: 'fa-star', color: 'text-neonBlue' }
-            ];
-
-            sections.forEach(sec => {
-                let cardsHTML = '';
-                if (sec.id === 'trending') {
-                    cardsHTML += createGameCardHTML(GAME_DB['gta-web']);
-                    for(let i=1; i<5; i++) cardsHTML += createGameCardHTML({title: `Project ${String.fromCharCode(65+i)}`}, true);
-                } else {
-                    for(let i=0; i<5; i++) cardsHTML += createGameCardHTML({title: `Project X${i}`}, true);
-                }
-
-                container.insertAdjacentHTML('beforeend', `
-                    <section>
-                        <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-2xl font-orbitron font-bold text-white flex items-center gap-3">
-                                <i class="fas ${sec.icon} ${sec.color}"></i> ${sec.title}
-                            </h2>
-                        </div>
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-                            ${cardsHTML}
-                        </div>
-                    </section>
-                `);
-            });
+            const btn = document.getElementById('gtaStoreBtn');
+            if (activeUserData.gamesOwned.includes('gta-web')) {
+                btn.innerText = "IN LIBRARY";
+                btn.className = "w-full py-2.5 rounded-lg text-sm font-bold bg-green-500/20 text-green-400 mt-auto";
+            }
         }
 
-        function renderLibrary() {
-            const grid = document.getElementById('library-grid');
-            const emptyState = document.getElementById('library-empty-state');
-            grid.innerHTML = '';
-
-            const userLib = usersDB[activeUser]?.library || [];
-
-            if (userLib.length === 0) {
-                grid.classList.add('hidden');
-                emptyState.classList.remove('hidden');
-                emptyState.classList.add('flex');
+        window.toggleAuthMode = (mode) => {
+            const btn = document.getElementById('authSubmitBtn');
+            const u = document.getElementById('userContainer');
+            if (mode === 'register') {
+                btn.dataset.mode = 'register'; btn.innerText = "CREATE ACCOUNT";
+                u.classList.remove('hidden');
+                document.getElementById('authToggleBtn').onclick = () => toggleAuthMode('login');
+                document.getElementById('authToggleBtn').innerText = "Login Here";
             } else {
-                emptyState.classList.add('hidden');
-                emptyState.classList.remove('flex');
-                grid.classList.remove('hidden');
-
-                userLib.forEach(id => {
-                    const game = GAME_DB[id];
-                    if(game) grid.insertAdjacentHTML('beforeend', createGameCardHTML(game));
-                });
+                btn.dataset.mode = 'login'; btn.innerText = "LOGIN";
+                u.classList.add('hidden');
+                document.getElementById('authToggleBtn').onclick = () => toggleAuthMode('register');
+                document.getElementById('authToggleBtn').innerText = "Register Now";
             }
+        };
+
+        window.switchTab = (t) => {
+            document.getElementById('storeContent').classList.toggle('hidden', t !== 'store');
+            document.getElementById('libraryContent').classList.toggle('hidden', t !== 'library');
+        };
+
+        window.toggleProfileMenu = () => document.getElementById('profileMenu').classList.toggle('hidden');
+        window.closeGameModal = () => document.getElementById('gameModal').classList.add('hidden');
+
+        function showToast(m, c) {
+            const t = document.createElement('div');
+            t.className = `glass-panel px-6 py-3 rounded-xl border border-white/10 text-sm font-bold animate-bounce`;
+            t.innerText = m;
+            document.getElementById('toast-container').appendChild(t);
+            setTimeout(() => t.remove(), 3000);
         }
 
-        // --- Game Details Modal & Action Logic ---
-        const modal = document.getElementById('game-modal');
-        const modalContent = document.getElementById('game-modal-content');
-
-        function openGameDetails(gameId) {
-            const game = GAME_DB[gameId];
-            if(!game) return;
-
-            document.getElementById('modal-img').src = game.image;
-            document.getElementById('modal-thumb').src = game.image;
-            document.getElementById('modal-title').innerText = game.title;
-            document.getElementById('modal-status').innerText = game.status;
-            document.getElementById('modal-desc').innerText = game.desc;
-            document.getElementById('modal-price').innerText = game.price;
-
-            const actionContainer = document.getElementById('modal-action-container');
-            const userLib = usersDB[activeUser]?.library || [];
-            const isOwned = userLib.includes(gameId);
-
-            if (isOwned) {
-                actionContainer.innerHTML = `
-                    <button onclick="launchGame('${gameId}')" class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-400 hover:to-emerald-500 text-white font-orbitron font-bold py-4 rounded-lg text-xl shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all transform hover:scale-105 flex items-center justify-center gap-3">
-                        <i class="fas fa-play"></i> PLAY
-                    </button>
-                    <div class="mt-4 p-3 bg-white/5 rounded border border-white/10 text-center text-sm text-gray-400">
-                        <i class="fas fa-check-circle text-green-500 mr-1"></i> In your Library
-                    </div>
-                `;
-            } else {
-                actionContainer.innerHTML = `
-                    <button onclick="addToLibrary('${gameId}')" class="w-full bg-gradient-to-r from-neonBlue to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-orbitron font-bold py-4 rounded-lg text-xl shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all transform hover:scale-105 flex items-center justify-center gap-3">
-                        <i class="fas fa-download"></i> GET GAME
-                    </button>
-                `;
-            }
-
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modalContent.classList.remove('scale-95');
-                modalContent.classList.add('scale-100');
-            }, 10);
+        const pc = document.getElementById('particles');
+        for(let i=0; i<40; i++){
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.width = p.style.height = (Math.random()*3+1)+'px';
+            p.style.left = (Math.random()*100)+'vw';
+            p.style.animationDuration = (Math.random()*10+10)+'s';
+            pc.appendChild(p);
         }
-
-        function closeGameDetails() {
-            modal.classList.add('opacity-0');
-            modalContent.classList.remove('scale-100');
-            modalContent.classList.add('scale-95');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        function addToLibrary(gameId) {
-            if(!activeUser) return;
-            
-            if (!usersDB[activeUser].library.includes(gameId)) {
-                usersDB[activeUser].library.push(gameId);
-                saveDB();
-                updateProfileUI(); // Update game count
-                
-                openGameDetails(gameId); // Refresh modal
-                
-                if (!document.getElementById('store-view').classList.contains('hidden')) {
-                    renderStore();
-                } else if (!document.getElementById('library-view').classList.contains('hidden')) {
-                    renderLibrary();
-                }
-            }
-        }
-
-        function launchGame(gameId) {
-            const game = GAME_DB[gameId];
-            closeGameDetails();
-            
-            const loader = document.getElementById('launch-loader');
-            document.getElementById('launch-game-title').innerText = game.title;
-            loader.classList.remove('hidden');
-            loader.classList.add('flex');
-
-            setTimeout(() => {
-                loader.classList.add('hidden');
-                loader.classList.remove('flex');
-                
-                const gamePage = document.getElementById('gamePage');
-                const iframe = document.getElementById('gameFrame');
-                
-                gamePage.classList.remove('hidden');
-                gamePage.classList.add('flex');
-                iframe.src = game.url;
-                
-                // Start gameplay timer
-                startGameTimer();
-                showToast('<i class="fas fa-play-circle text-neonBlue mr-2"></i> Gameplay started. Earning active points!', 'text-white border-neonBlue/50');
-            }, 2000);
-        }
-
-        function closeGame() {
-            const gamePage = document.getElementById('gamePage');
-            const iframe = document.getElementById('gameFrame');
-            
-            gamePage.classList.add('hidden');
-            gamePage.classList.remove('flex');
-            iframe.src = '';
-            document.getElementById('controls-overlay').classList.add('hidden');
-            
-            // Stop gameplay timer
-            stopGameTimer();
-            showToast('<i class="fas fa-stop-circle text-red-400 mr-2"></i> Gameplay paused.', 'text-white border-red-500/30');
-        }
-
-        function toggleControls() {
-            document.getElementById('controls-overlay').classList.toggle('hidden');
-        }
-
-        // --- Visual Effects & Fake Data ---
-        const cursor = document.getElementById('cursor');
-        const cursorTrail = document.getElementById('cursor-trail');
-        
-        let mouseX = window.innerWidth / 2;
-        let mouseY = window.innerHeight / 2;
-        let trailX = mouseX;
-        let trailY = mouseY;
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            // Hardware accelerated zero-lag movement for main cursor
-            cursor.style.transform = `translate3d(${mouseX - 10}px, ${mouseY - 10}px, 0)`;
-        });
-
-        function animateCursor() {
-            // Smooth lerp (linear interpolation) for the trail
-            trailX += (mouseX - trailX) * 0.25;
-            trailY += (mouseY - trailY) * 0.25;
-            cursorTrail.style.transform = `translate3d(${trailX - 4}px, ${trailY - 4}px, 0)`;
-            requestAnimationFrame(animateCursor);
-        }
-        animateCursor(); // Start the loop
-
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        let particlesArray = [];
-        function initParticles() {
-            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            particlesArray = [];
-            for (let i = 0; i < 100; i++) {
-                particlesArray.push({
-                    x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-                    size: Math.random() * 2 + 1, speedX: (Math.random() - 0.5) * 0.5, speedY: (Math.random() - 0.5) * 0.5,
-                    color: Math.random() > 0.5 ? 'rgba(0,243,255,0.5)' : 'rgba(188,19,254,0.5)'
-                });
-            }
-        }
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particlesArray.forEach(p => {
-                p.x += p.speedX; p.y += p.speedY;
-                if(p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-                if(p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-                ctx.fillStyle = p.color; ctx.fill();
-            });
-            requestAnimationFrame(animateParticles);
-        }
-        window.addEventListener('resize', initParticles);
-        initParticles(); animateParticles();
-
-        const playerCounter = document.getElementById('online-players');
-        let currentPlayers = 24591;
-        setInterval(() => {
-            currentPlayers += Math.floor(Math.random() * 51) - 25;
-            playerCounter.innerText = currentPlayers.toLocaleString();
-        }, 4000);
-
     </script>
 </body>
 </html>
